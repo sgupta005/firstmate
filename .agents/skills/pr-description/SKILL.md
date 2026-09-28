@@ -19,7 +19,8 @@ Every section is short bullets, not prose paragraphs - a couple of lines per bul
 ## Why
 
 - One or two bullets on the concrete problem this PR solves, not what you did to solve it.
-- Name the failure, missing capability, or request that motivated the change; if it traces to a captain instruction or filed issue, say so in the same bullet.
+- Name the failure, missing capability, or request that motivated the change; if it traces to a filed issue, say so in the same bullet.
+- Never name the requester, describe the change as following an instruction, or use any firstmate-internal terms (captain, firstmate, crewmate, ship, brief, worker, and the like) - state the motivation as a plain fact about the project.
 - Skip a "why" that only restates the title - keep looking for the actual motivation instead.
 
 ## What changed
