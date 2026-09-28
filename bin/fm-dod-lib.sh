@@ -280,11 +280,14 @@ EOF
 # Written once; only the two sentences about a green PR depend on the forge,
 # because on gerrit the ci step is skipped and there is no PR to report.
 fm_nm_driving_block() {  # <forge>
-  local pr_return_line='' pr_reattach_clause=';'
+  local pr_return_line='' pr_reattach_clause=';' pr_body_rule='' rule_count_word='Two'
   if [ "$1" != gerrit ]; then
     pr_return_line="Only a drive call's return reports the green PR: \`no-mistakes axi status\` shows progress but never reports \`checks-passed\` while the ci step is still monitoring the PR for merge, so never wait on a status poll for the next gate or outcome.
 "
     pr_reattach_clause="; once checks are green it returns \`checks-passed\` immediately, and"
+    pr_body_rule="
+- At no-mistakes' PR-open step, write the PR body by reading and following \`pr-description\`."
+    rule_count_word='Three'
   fi
   cat <<EOF
 You drive no-mistakes by responding to its gates, not by implementing fixes.
@@ -307,12 +310,12 @@ ${pr_return_line}Whenever a drive call returns without a gate or an outcome - it
 A killed or timed-out call is never evidence the daemon died: the daemon accepts your response immediately and runs the round in the background, so the call was only ever waiting for a read while the run kept working.
 Reattach and keep going rather than reporting the pipeline blocked; rule 7 owns the checks that decide when a pipeline block is real.
 
-Two firstmate-specific rules layer on top of that guidance:
+${rule_count_word} firstmate-specific rules layer on top of that guidance:
 - ask-user findings are never yours to answer: escalate to firstmate using rule 6's ask-user format and stop.
   Firstmate applies \`ask-user-authority\` and obtains any required captain decision.
   When the decision comes back, feed it to the gate with \`no-mistakes axi respond\` and let the pipeline apply it - do not route the question to "the user" or implement the fix yourself.
 - NEVER pass \`--yes\` (or \`-y\`) to \`no-mistakes axi run\` or \`no-mistakes axi respond\`. It is banned fleet-wide.
-  It auto-resolves every gate including ask-user findings with no escalation, and answering your own ask-user finding is a hard rule violation.
+  It auto-resolves every gate including ask-user findings with no escalation, and answering your own ask-user finding is a hard rule violation.${pr_body_rule}
 EOF
 }
 
@@ -397,7 +400,7 @@ Delivery contract: mode=direct-PR
 Ship branch: $branch
 This task ships **direct-PR**: you raise the PR yourself, without the no-mistakes pipeline.
 The task is complete only when committed on your branch.
-When it is implemented and committed, push your branch and open a PR with \`gh-axi\` that is ready for review, not a draft.
+When it is implemented and committed, push your branch and open a PR with \`gh-axi\` that is ready for review, not a draft, writing the PR body by reading and following \`pr-description\`.
 Before you report done, read the PR back from the forge and confirm it is not a draft (\`gh-axi pr view <number>\` must print \`draft: no\`, where <number> is the PR number from your PR URL); if it is a draft, mark it ready with \`gh-axi pr ready <number>\`.
 A draft cannot be merged, so a done report on one leaves the merge unasked.
 Then append \`done [at=<epoch>]: PR {url}\` to the status file and stop.
